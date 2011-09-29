@@ -1,1 +1,8 @@
-Just a try...
+This is kim's first test on GIT project
+
+useful commands:
+git fetch origin
+git branch
+git checkout
+git remote add
+git commit
