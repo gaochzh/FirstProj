@@ -8,3 +8,4 @@ git pull origin <master>
 git learning at http://backlogtool.com/git-guide/cn/
 
 git branch -b will checkout the new branch
+git difference between merge and rebase (TODO)
