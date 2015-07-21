@@ -1,0 +1,64 @@
+Useful links for new MM Team members
+
+June 1, 2015 / Engineering Only
+
+Edit post
+
+ 
+Engineering processes and Simpana Architecture:
+
+\\vaultcxdocs\Engineering-Docs\Engineering Processes
+
+\\vaultcxdocs\Engineering-Docs\Training Docs
+
+Development Training links (very useful – even has recorded webex sessions – mainly check out Data Aging, SILO, AuxCopy client-side-dedup and Resource Manager)
+
+http://engweb/knowledgebase/?p=434
+
+MediaManagement subsystem (would be good to go through this):
+
+\\vaultcxdocs\Engineering-Docs\A-Z Features\MediaManagement\GalaxyMediaManagement.ppt
+\\vaultcxdocs\Engineering-Docs\A-Z Features\MediaManagement\TroubleShootMM.zip
+\\vaultcxdocs\Engineering-Docs\A-Z Features\MediaManagement\Demos
+
+DeDuplicaton
+
+\\vaultcxdocs\Engineering-Docs\A-Z Features\DeDuplication\Deduplication-9.0.pptx
+
+http://engweb/knowledgebase/?p=358
+
+\\vaultcxdocs\Engineering-Docs\A-Z Features\DeDuplication\DeDup Certification Program_revized deepak comment.docx
+
+KnowledgeBase
+
+http://engweb/knowledgebase/?tag=mm
+
+Source-code (for looking up some logging or error string from the log):
+
+http://ncvs
+
+Engineering Portal:
+
+http://engportal/Main.aspx (contains links to logging time-off, devcenter, etc.)
+
+Engineering Tasks website
+
+http://engweb.gp.cv.commvault.com
+
+– The main website for viewing all tasks/defects assigned to developers/testers, etc. This should be a good entry point – as the main page has links to other useful sites.
+
+To see a specific defect #:
+
+http://engweb/qa/mr_details.php?Testdb=no&DebugMode=&DocViewMode=no&Mr=MRHERE
+
+– would replace MRHERE with the defect #.
+
+Your Tasks:
+
+http://engweb.gp.cv.commvault.com/inbox/inbox.php?name=<YOUR-CV-USERNAME>&type=Summary
+
+All Design Docs:
+
+\\vaultcxdocs\Engineering-Docs\A-Z Features
+
+\\vaultcxdocs\Engineering-Docs\Training Docs
