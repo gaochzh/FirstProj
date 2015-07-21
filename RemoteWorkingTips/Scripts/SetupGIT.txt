@@ -1,0 +1,39 @@
+A very useful webpage: http://undefinedvalue.com/2010/07/02/workflow-remote-cvs-local-git
+
+Basically here is the step:
+1. Sync the CVS to the top of branch. The checkout is not necessary if you already synced using winCVS (it will take a long time)
+	cvs login
+	cd $CVSROOT
+	cvs checkout $PROJECT
+
+2. Initialize git at the top level (not under vaultcx level):
+	git init
+
+3. Create a .gitignore file at the top level to ignore project/binary/meta files. See attached .gitignore file
+
+4. Import necessary files/folders to git repository. See attached "GitSyncFiles.txt"
+	git add $FOLDERS
+	git commit -m "Initial commit"
+
+5. Add a local tag to indicate that git and cvs are synced:
+	git tag cvssync
+
+6. Now we can begin our work. First check out a branch for a new form 9999:
+	git checkout -b Form9999
+
+7. Do the work on Form9999. Merge it to master once it is done:
+	git checkout master
+	git merge Form9999
+
+8. Sync the master again to the tip of branch, assuming we already syncec using winCVS:
+	git commit -am "Sync with CVS on Jul21"
+	git tag -f cvssync
+
+9. Now we could upload the files to either CVS or UpdateCenter for that Form.
+
+10. If others changed related code and we need a merge on branch Form 9999, we could do that (assuming we are on Form9999 branch now):
+	git checkout master
+	// sync use winCVS
+	git commit -am "Pull from CVS"
+	git checkout Form9999
+	git rebase master

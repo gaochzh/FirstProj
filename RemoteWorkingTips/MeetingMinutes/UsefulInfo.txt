@@ -1,0 +1,47 @@
+
+Xuemei's cell: 7326146408
+
+- How to setup a dev machine: http://engportal.commvault.com/BuildCenter/DevMachineSetup.aspx
+- Create your VMs for testing: https://cloud.commvault.com/webconsole/vmprovisioning/
+
+Source code location:
+- SIM Server:
+vaultcx\Source\CommServer\CVInstallManager
+vaultcx\Source\CommServer\CVInstallManagerDBInterface
+- SIM Client:
+vaultcx\Source\Common\CVInstallClient
+vaultcx\Source\Common\CVInstallCommon
+vaultcx\Source\Common\CVInstallNetwork
+
+Link to install Simpana software: \\eng\RecutsToTest\11.0.0\Build60\DVD
+Or use IP: \\172.19.220.125\RecutsToTest\11.0.0\Build60\DVD
+
+SIM related Log Files: CvInstallMgr.log, CvInstallClient.log
+
+driver program:
+C:\SimpanaB60\Base>simCallWrapper -input ..\sim2.xml -output ..\t.xml -enc 2ehtIjjtzjj4njj4bjjtYjjtEjjtEjjtfjj4Kjjfajj4njjtIjjtgjjfajjtYjjtbjjt0jjtIjjtzjj
+
+DatabaseUpgrade:
+ - We need to modify vaultcx\Source\CommServer\Db\TblScript\SqlTblScriptsDBU.lst, remove three scripts: simOS, simSystemOS and simOEMMap. The generated tblScriptDBUAll.sql will exclude those three scripts.
+
+Xuemei introduced the password enc/dec tools at \\devshare\devl\pgokhale\CoderTool, pAccess key under “HK_LM/.../Instance01/Database”. We need to first use tool to decrypt it.The plain test consists of “account length”, followed by account and password.
+
+Tips for Linux/Unit client install:
+1. Firewall has to be disable, to ensure cvd communicaton (or set correct iptable values):
+Next enter the following three commands to disable firewall.
+# service iptables save
+# service iptables stop
+# chkconfig iptables off
+
+If you are using IPv6 firewall, enter:
+# service ip6tables save
+# service ip6tables stop
+# chkconfig ip6tables off
+
+2. Could mount \\eng to local for interactive install/uninstall:
+mount eng:// /mnt/eng
+
+3. Useful tools for Linux
+- top (with procps installed)
+- ldd
+- nm

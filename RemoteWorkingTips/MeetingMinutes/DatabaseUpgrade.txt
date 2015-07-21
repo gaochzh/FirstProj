@@ -1,0 +1,7 @@
+vaultcxtools/DatabaseUpgrade/CommServer/PreUpgrade/SIMDeprecatedAgentCheck.sql
+
+DatabaseUpgrade.exe  -PhaseName ALL -instance Instance001 -productName CommServer -log C:\DBUpgrade\Logs -DBSourceDir C:\DBUpgrade\DBDump  -DBRestoreDir C:\DBUpgrade\restoreDir -retaindb ALL -auto
+
+-DBSource: we have two DB types (production & test). Test DB will add _timestamp to DB name and it needs to specify the DBDump location.
+-DBRestoreDir: the actual location of the restored DB.
+-retaindb: we need to keep the test db for use after upgrade.
