@@ -44,6 +44,14 @@ codeLocation = [
 "vaultcx/Source/Common/CvSim",
 "vaultcx/Source/Common/CvUnixSetup",
 
+"vaultcx/Source/Common/CvLib",
+"vaultcx/Source/Common/CvDataPipe",
+"vaultcx/Source/Common/EventMessage",
+"vaultcx/Source/Common/XmlMessage",
+
+"vaultcx/Source/Installer/Source/Common/Include",
+"vaultcx/Source/Installer/Source/RemoteInstall",
+
 "vaultcxtools/DatabaseUpgrade/CommServer",
 "vaultcxtools/SetPreImagedNames"
 ]

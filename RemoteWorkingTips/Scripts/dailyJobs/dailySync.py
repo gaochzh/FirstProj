@@ -32,6 +32,11 @@ subprocess.call(cmd)
 #print("Now wait for 20s until logon is OK")
 #sleep(20)
 
+# run cygwin script to change current branch to master before synchronize
+# we will call git stash if current branch is not master
+shellCmd = 'd:/cygwin64/bin/bash --login -c "sh /home/kgao/chkgit.sh"'
+subprocess.call(shellCmd)
+
 snapDrive = 'd:/snapDrives/'
 # May need change when a new snap folder is generated
 curSnapFolder = 'v11B80/'
@@ -62,6 +67,14 @@ codeLocation = [
 "vaultcx/Source/Common/SIMCallWrapper",
 "vaultcx/Source/Common/CvSim",
 "vaultcx/Source/Common/CvUnixSetup",
+
+"vaultcx/Source/Common/CvLib",
+"vaultcx/Source/Common/CvDataPipe",
+"vaultcx/Source/Common/EventMessage",
+"vaultcx/Source/Common/XmlMessage",
+
+"vaultcx/Source/Installer/Source/Common/Include",
+"vaultcx/Source/Installer/Source/RemoteInstall",
 
 "vaultcxtools/DatabaseUpgrade/CommServer",
 "vaultcxtools/SetPreImagedNames"
