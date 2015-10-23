@@ -9,11 +9,18 @@ import shutil
 import time
 from time import sleep
 from subprocess import Popen
+from time import gmtime, strftime
 
 CVSCmd = "cvs"
 
 # TODO: tag needs to be updated when new build comes
 CVSTag = "REL_11_0_0_BRANCH "
+
+#############################################################################################
+#
+#       Step 1. Sync latest source files from CVS for both cvsroot and snap driver
+#
+#############################################################################################
 
 # CVS login token
 CVSLoginToken = ":pserver:kgao:Chang40zhe@ncvs.commvault.com:/cvs/cvsrepro/GX"
@@ -46,7 +53,7 @@ cvsRoot = 'd:/cvsroot/'
 # TODO: we might also add new folders
 codeLocation = [
 "vaultcx/Source/Include", 
-"vaultcx/Source/CommServer/CVInstallManagerDBInterface", 
+"vaultcx/Source/CommServer/CVInstallManagerDBInterface"  #, 
 "vaultcx/Source/CommServer/CVInstallManager",
 "vaultcx/Source/CommServer/Db",
 "vaultcx/Source/CommServer/CVPatchesUpdateDBServer",
@@ -72,38 +79,79 @@ codeLocation = [
 "vaultcx/Source/Common/CvDataPipe",
 "vaultcx/Source/Common/EventMessage",
 "vaultcx/Source/Common/XmlMessage",
+"vaultcx/Source/Common/clusterUtils",
 
 "vaultcx/Source/Installer/Source/Common/Include",
 "vaultcx/Source/Installer/Source/RemoteInstall",
 
 "vaultcxtools/DatabaseUpgrade/CommServer",
-"vaultcxtools/SetPreImagedNames"
+"vaultcxtools/SetPreImagedNames",
+"vaultcxtools/CopyToCacheDLL"
 ]
 
-for x in codeLocation:
-# update local cvs folder first
-	curDir = cvsRoot + x
-#	print curDir
-	os.chdir(curDir)
-	newcmd = CVSCmd + " update -P -r " + CVSTag
-#	print newcmd
-# 	res = Popen(newcmd)
-	subprocess.call(newcmd)
+def syncCVS(targetFolder):
+	for x in codeLocation:
+	# update local cvs folder first
+		curDir = targetFolder + x
+		#print curDir
+		os.chdir(curDir)
+		newcmd = CVSCmd + " update -P -r " + CVSTag
+		print newcmd
+		# res = Popen(newcmd)
+		subprocess.call(newcmd)
+	print("Synchronize [" + targetFolder +"] from CVS is done...:)");
 
-#timeInterval = 120
-# Sleep some time before syncing the other one
+# Step 1. Sync CVS code to local CVS folder. This should be quick
+syncCVS(cvsRoot)
+
+print("Step 1: CVS synchronize on local is done... :)")
+
+# Step 2. Create a thread to sync CVS folder on snap driver. This could be slow depends on network speed
+from threading import Thread
+from time import sleep
+
+thread = Thread(target = syncCVS, args = (snapDrive + curSnapFolder, ))
+thread.start()
+print "A new thread has been created to sync snap folder."
+
 #sleep(timeInterval)
 
-for x in codeLocation:
-# update local cvs folder first
-	curDir = snapDrive + curSnapFolder + x
-	print curDir
-	os.chdir(curDir)
-	newcmd = CVSCmd + " update -P -r " + CVSTag
-	print newcmd
-	# res = Popen(newcmd)
-	subprocess.call(newcmd)
+# Build include projects in local. This should run simontaneously with snap CVS sync
+############################################################################################################
+#
+#       Step 3. Use MsBuild to automatically build XMLMessage, EventMessage, DB_Include and DB_SQL project
+#
+############################################################################################################
 
-#sleep(timeInterval)
+curDateTime = strftime("%Y_%m_%d_%H_%M_%S", gmtime())
+logSuffix = "_" + curDateTime + ".log"
+buildLogPrefix = "D:\\dailyJobs\\Logs\\buildLog_"
+errorLogPrefix = "D:\\dailyJobs\\Logs\\errorLog_"
 
-print("CVS synchronize on both local and snap folder is done... :)")
+# We could add more projects using msbuild here
+# , ["DB_SQL", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\..\\..\\CommServer\\Db\\DB_SQL.vcxproj"]
+buildProjects = [
+["XMLMessage", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\CvXMLMsgs\\XMLMessage.vcxproj"]
+, ["EventMessage", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\..\\..\\Common\\EventMessage\\Include\\EventMessage.vcxproj"]
+, ["DB_Include", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\..\\..\\CommServer\\Db\\Include\\DB_Include.vcxproj"]
+]
+
+msbuildCmd1 = "C:\\Program Files (x86)\\MSBuild\\12.0\\Bin\\amd64\\msbuild.exe  -t:clean;rebuild -p:Configuration=Release;Platform=x64 -p:BuildProjectReferences=false /FileLogger /FileLogger2 /fileLoggerParameters:LogFile="
+msbuildCmd2 = ";;verbosity=normal /FileLoggerParameters2:LogFile="
+msbuildCmd3 = ";errorsonly /noconsolelogger /verbosity:normal "
+
+for x in buildProjects:
+	buildLog = buildLogPrefix + x[0] + logSuffix
+	print buildLog
+	errorLog = errorLogPrefix + x[0] + logSuffix
+	print errorLog
+	curbuildCmd = msbuildCmd1 + buildLog + msbuildCmd2 + errorLog + msbuildCmd3 + x[1]
+	print curbuildCmd
+	subprocess.call(curbuildCmd)
+
+print("Step 3: MsBuild on autogen projects is done... :)")
+
+thread.join();
+
+print("After join, step 2: sync code on snap drive is done... :)");
+
