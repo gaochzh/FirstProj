@@ -53,7 +53,7 @@ cvsRoot = 'd:/cvsroot/'
 # TODO: we might also add new folders
 codeLocation = [
 "vaultcx/Source/Include", 
-"vaultcx/Source/CommServer/CVInstallManagerDBInterface"  #, 
+"vaultcx/Source/CommServer/CVInstallManagerDBInterface", 
 "vaultcx/Source/CommServer/CVInstallManager",
 "vaultcx/Source/CommServer/Db",
 "vaultcx/Source/CommServer/CVPatchesUpdateDBServer",
