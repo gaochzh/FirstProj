@@ -81,28 +81,33 @@ codeLocation = [
 "vaultcx/Source/Common/XmlMessage",
 "vaultcx/Source/Common/clusterUtils",
 
+"vaultcx/Source/Project/winnt40_intel",
 "vaultcx/Source/Installer/Source/Common/Include",
 "vaultcx/Source/Installer/Source/RemoteInstall",
+"vaultcx/Source/NewInstaller/Source/QInstaller",
 
 "vaultcxtools/DatabaseUpgrade/CommServer",
-"vaultcxtools/SetPreImagedNames",
-"vaultcxtools/CopyToCacheDLL"
+"vaultcxtools/SetPreImagedNames"
 ]
 
-def syncCVS(targetFolder):
-	for x in codeLocation:
+codeLocationEx = [
+"vaultcxGui"
+]
+
+def syncCVS(targetFolder, codePath):
+	for x in codePath:
 	# update local cvs folder first
 		curDir = targetFolder + x
 		#print curDir
 		os.chdir(curDir)
-		newcmd = CVSCmd + " update -P -r " + CVSTag
+		newcmd = CVSCmd + " update -P -d -r " + CVSTag
 		print newcmd
 		# res = Popen(newcmd)
 		subprocess.call(newcmd)
 	print("Synchronize [" + targetFolder +"] from CVS is done...:)");
 
 # Step 1. Sync CVS code to local CVS folder. This should be quick
-syncCVS(cvsRoot)
+syncCVS(cvsRoot, codeLocation)
 
 print("Step 1: CVS synchronize on local is done... :)")
 
@@ -110,9 +115,13 @@ print("Step 1: CVS synchronize on local is done... :)")
 from threading import Thread
 from time import sleep
 
-thread = Thread(target = syncCVS, args = (snapDrive + curSnapFolder, ))
+thread = Thread(target = syncCVS, args = (snapDrive + curSnapFolder, codeLocation, ))
 thread.start()
 print "A new thread has been created to sync snap folder."
+
+thread2 = Thread(target = syncCVS, args = (cvsRoot, codeLocationEx, ))
+thread2.start()
+print "A new thread has been created to sync vaultcxGui folder on local cvsroot."
 
 #sleep(timeInterval)
 
@@ -136,7 +145,8 @@ buildProjects = [
 , ["DB_Include", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\..\\..\\CommServer\\Db\\Include\\DB_Include.vcxproj"]
 ]
 
-msbuildCmd1 = "C:\\Program Files (x86)\\MSBuild\\12.0\\Bin\\amd64\\msbuild.exe  -t:clean;rebuild -p:Configuration=Release;Platform=x64 -p:BuildProjectReferences=false /FileLogger /FileLogger2 /fileLoggerParameters:LogFile="
+# -t:clean;rebuild
+msbuildCmd1 = "C:\\Program Files (x86)\\MSBuild\\12.0\\Bin\\amd64\\msbuild.exe  -t:build -p:Configuration=Release;Platform=x64 -p:BuildProjectReferences=false /FileLogger /FileLogger2 /fileLoggerParameters:LogFile="
 msbuildCmd2 = ";;verbosity=normal /FileLoggerParameters2:LogFile="
 msbuildCmd3 = ";errorsonly /noconsolelogger /verbosity:normal "
 
@@ -151,7 +161,8 @@ for x in buildProjects:
 
 print("Step 3: MsBuild on autogen projects is done... :)")
 
+thread2.join()
 thread.join();
 
-print("After join, step 2: sync code on snap drive is done... :)");
+print("After join, step 2: sync code on snap drive and local Gui is done... :)");
 
