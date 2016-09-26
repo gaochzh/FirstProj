@@ -1,11 +1,11 @@
 #!/bin/sh
 
-fileListName='/cygdrive/d/cvsroot/filesToCopy.txt'
+fileSourceName='/cygdrive/d/cvsroot/filesToCopy.txt'
 
 echo "The following files will be copied to snap driver:"
 printf "\n"
 
-mapfile -t fileNames < <(git diff --name-only)
+mapfile -t fileNames < $fileSourceName
 
 printf "%s\n" "${fileNames[@]}"
 
@@ -26,7 +26,6 @@ then
 snapRoot='/cygdrive/d/snapDrives/v11B80/'
 
 for (( i=0; i<${#fileNames[@]}; i++ )); do 
-#   echo ${fileNames[i]} >> $fileListName
    echo "Now copy ${fileNames[i]} to $snapRoot${fileNames[i]}"
    cp -f ${fileNames[i]} "$snapRoot${fileNames[i]}";
 done
