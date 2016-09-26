@@ -85,8 +85,6 @@ codeLocation = [
 "vaultcx/Source/Installer/Source/Common/Include",
 "vaultcx/Source/Installer/Source/RemoteInstall",
 "vaultcx/Source/NewInstaller/Source/QInstaller",
-"vaultcx/Source/Common/Messages",
-"vaultcx/Source/MediaAgent/Indexing2/Utils",
 
 "vaultcxtools/DatabaseUpgrade/CommServer",
 "vaultcxtools/SetPreImagedNames"
@@ -96,17 +94,13 @@ codeLocationEx = [
 "vaultcxGui"
 ]
 
-#@@ Enable the force sync flag
-#cleanFlag = " -C "
-cleanFlag = ""
-
 def syncCVS(targetFolder, codePath):
 	for x in codePath:
 	# update local cvs folder first
 		curDir = targetFolder + x
 		#print curDir
 		os.chdir(curDir)
-		newcmd = CVSCmd + " update -P -d -r " + cleanFlag + CVSTag
+		newcmd = CVSCmd + " update -P -C -d -r " + CVSTag
 		print newcmd
 		# res = Popen(newcmd)
 		subprocess.call(newcmd)
@@ -118,14 +112,13 @@ syncCVS(cvsRoot, codeLocation)
 print("Step 1: CVS synchronize on local is done... :)")
 
 # Step 2. Create a thread to sync CVS folder on snap driver. This could be slow depends on network speed
-from threading import Thread
-from time import sleep
+#from threading import Thread
+#from time import sleep
 
-thread = Thread(target = syncCVS, args = (snapDrive + curSnapFolder, codeLocation, ))
-thread.start()
-print "A new thread has been created to sync snap folder."
+#thread = Thread(target = syncCVS, args = (snapDrive + curSnapFolder, codeLocation, ))
+#thread.start()
+#print "A new thread has been created to sync snap folder."
 
-# Sync GUI code
 #thread2 = Thread(target = syncCVS, args = (cvsRoot, codeLocationEx, ))
 #thread2.start()
 #print "A new thread has been created to sync vaultcxGui folder on local cvsroot."
@@ -150,7 +143,6 @@ buildProjects = [
 ["XMLMessage", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\CvXMLMsgs\\XMLMessage.vcxproj"]
 , ["EventMessage", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\..\\..\\Common\\EventMessage\\Include\\EventMessage.vcxproj"]
 , ["DB_Include", "D:\\cvsroot\\vaultcx\\Source\\Project\\winnt40_intel\\..\\..\\CommServer\\Db\\Include\\DB_Include.vcxproj"]
-, ["Messages", "D:\\cvsroot\\vaultcx\\Source\\Common\\Messages\\Messages.vcxproj"]
 ]
 
 # -t:clean;rebuild
@@ -169,8 +161,8 @@ for x in buildProjects:
 
 print("Step 3: MsBuild on autogen projects is done... :)")
 
-thread2.join()
-thread.join();
+#thread2.join()
+#thread.join();
 
-print("After join, step 2: sync code on snap drive and local Gui is done... :)");
+print("Completed... :)");
 
