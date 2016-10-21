@@ -6,3 +6,5 @@ git branch
 git checkout
 git remote add
 git commit
+git rebase
+
